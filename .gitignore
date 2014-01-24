@@ -34,3 +34,16 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Editors
+*~
+\#*#
+*.swp
+
+# Data files
+*.txt
+*.zip
+*.csv
+*.pdf
+cmudict.*
+celex2
