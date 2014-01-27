@@ -50,7 +50,11 @@ the publicly available data sets.
 Installation
 ============
 
-*You do not need to install ``lingtools`` to use it. However, if you want to use its
+_You do not need to install ``lingtools`` to use it._ However, if you want to call
+it from other programs you develop, that may be the most convenient way to use it.
+Rather than installing, you can also just put the root of the repository on your
+``PYTHONPATH``.
+
 
 If you want to install it, do the following:
 
