@@ -4,8 +4,9 @@ lingtools
 Simple tools for studying language: data preprocessing, frequency
 norms, n-gram models, working with lexicons, and more.
 
-LingTools incorporates external modules for syllabification and for
-reading from Praat TextGrids. See
+LingTools incorporates external modules for syllabification
+(``lingtools.phon.syllabify``) and for reading from Praat TextGrids
+``lingtools.phon.textgrid``). See
 [syllabify](https://github.com/kylebgorman/syllabify/) and
 [textgrid](https://github.com/kylebgorman/textgrid/) for more
 information.
