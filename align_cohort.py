@@ -71,7 +71,7 @@ def align_cohort(input_dir, ent_path, rate, output_path):
     prefix_ent = {}
 
     # Load entropy
-    with open(ent_path, 'Ur') as ent_file:
+    with open(ent_path, 'rU') as ent_file:
         reader = csv.DictReader(ent_file)
         for row in reader:
             prefix_ent[row['prefix']] = \

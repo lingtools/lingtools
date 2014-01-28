@@ -25,11 +25,13 @@ markers.
 import csv
 import argparse
 
+# TODO: Change this to use the ELP class
 WORD_FIELD = "Word"
 PRON_FIELD = "Pron"
 NPHON_FIELD = "NPhon"
 NSYLL_FIELD = "NSyll"
 NULL = "NULL"
+
 # " is primary stress, % is secondary, . is syllable boundary
 DELETION_CHARS = '"%.'
 # These represent a reasonable attempt to map the phonemes to
@@ -70,7 +72,7 @@ def replace_phons(pron):
 
 def extract(input_path, output_path, mono_only):
     """Extract words from the input path and write them to the output."""
-    with open(input_path, 'Ur') as input_file, \
+    with open(input_path, 'rU') as input_file, \
             open(output_path, 'wb') as output_file:
         reader = csv.DictReader(input_file)
         writer = csv.writer(output_file)

@@ -26,7 +26,6 @@ from itertools import takewhile
 from lingtools.corpus import subtlexreader
 from lingtools.lex.cohort import prefixes, uniqueness_point, make_prefix_dict
 from lingtools.prob.probability import entropy, normalize_counts, surprisal
-from lingtools.util.r import NA
 
 # All vowels in the converted representation, used to identify onsets.
 # These should be checked against your stimuli list; these were
@@ -128,7 +127,7 @@ def cohort_info(word_path, freq_path, output_base):
     word_freqs = {word: subtlex[word].freq_count_low for word in subtlex}
 
     print "Reading pronunciations..."
-    with open(word_path, 'Ur') as word_file:
+    with open(word_path, 'rU') as word_file:
         word_reader = csv.reader(word_file)
         word_prons = {row[0]: row[1] for row in word_reader}
 
@@ -201,7 +200,6 @@ def cohort_info(word_path, freq_path, output_base):
                                       for prefix in prefixes(pron)[1:]])
         pron_uniqueness[pron] = uniqueness_point([prefix_counts[prefix]
                                                   for prefix in prefixes(pron)])
-        
 
     # Compute initial and onsetnuc entropy
     pron_initials = {pron: _get_initial(pron) for pron in pron_freqs}
