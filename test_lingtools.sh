@@ -1,4 +1,4 @@
 #!/bin/sh
-pylint lingtools
-flake8 lingtools
+pylint *.py lingtools
+flake8 *.py lingtools
 nosetests --with-doctest
