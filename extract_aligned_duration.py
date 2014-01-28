@@ -21,7 +21,7 @@ import csv
 import argparse
 
 from lingtools.phon.textgrid import TextGrid
-from align_entropy import phoneme_tier, textgrid_files
+from align_cohort import phoneme_tier, textgrid_files
 
 
 def align_duration(input_dir, output_path):
