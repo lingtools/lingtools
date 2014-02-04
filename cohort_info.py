@@ -100,7 +100,10 @@ def _get_onsetnuc(phones):
 
     """
     onset = ''.join(takewhile(lambda x: x not in VOWELS, phones))
-    nuc = phones[len(onset)]
+    try:
+        nuc = phones[len(onset)]
+    except IndexError:
+        raise ValueError("Could not correctly compute onset length in {}.".format(phones))
     return onset + nuc
 
 

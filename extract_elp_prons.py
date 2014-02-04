@@ -42,6 +42,9 @@ PHON_REPLACEMENTS = (
     # R-colored schwa
     ("@`", "R"),
     ("3`", "R"),
+    # In the ELP it is always `, but some hand output uses '
+    ("3'", "R"),
+    ("@'", "R"),
     # Syllabic l
     ("l=", "L"),
     # Move engma to G to leave N for syllabic n.
