@@ -42,7 +42,8 @@ BAD_CHARACTERS = set((
 VOWELS = syllabify.vowels
 
 
-def find_ganong(elp_path, cmudict_path, subtlex_path, max_sylls, out_path):
+def find_ganong(elp_path, cmudict_path, subtlex_path, max_sylls, out_path,
+                pair_word):
     """Find Ganong effect items a dictionary with <= max_sylls syllables."""
     # Open corpora
     elp = ELP(elp_path)
@@ -89,7 +90,8 @@ def find_ganong(elp_path, cmudict_path, subtlex_path, max_sylls, out_path):
 
     # Find the pairs
     ganong_words = set(word for word in eligible_words
-                       if is_ganong_pron(word_prons[word], all_prons, VOICING_PAIRS))
+                       if is_ganong_pron(word_prons[word], all_prons,
+                                         VOICING_PAIRS, pair_word))
 
     # Get frequency information
     word_freqs = {}
@@ -117,7 +119,7 @@ def _exclude_word(word):
     return any(char in BAD_CHARACTERS for char in word)
 
 
-def is_ganong_pron(pron, all_prons, voicing_pairs):
+def is_ganong_pron(pron, all_prons, voicing_pairs, pair_word=False):
     """Return whether an item is a Ganong effect item."""
     first = pron[0]
     # Skip things that don't start with the right segment
@@ -125,8 +127,10 @@ def is_ganong_pron(pron, all_prons, voicing_pairs):
         return False
     # Make the new pronunciation
     new_pron = [voicing_pairs[first]] + pron[1:]
-    # Return true if the new pron is not a word
-    return tuple(new_pron) not in all_prons
+    # Return true if the new pron fits the criteria
+    result = tuple(new_pron) not in all_prons
+    # Reverse the result if we actually want pairs of words
+    return result if not pair_word else not result
 
 
 def main():
@@ -138,9 +142,11 @@ def main():
     parser.add_argument('out_path', help='output CSV file')
     parser.add_argument('-s', '--syll', nargs='?', default=None, type=int,
                         help='maximum number of syllables')
+    parser.add_argument('-w', '--word', default=False, action='store_true',
+                        help='whether to identify word-word pairs')
     args = parser.parse_args()
     find_ganong(args.elp_path, args.cmudict_path, args.subtlex_path,
-                args.syll, args.out_path)
+                args.syll, args.out_path, args.word)
 
 
 if __name__ == "__main__":
