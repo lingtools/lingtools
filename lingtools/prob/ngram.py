@@ -20,7 +20,7 @@ A simple N-gram model class.
 from itertools import product, izip, islice
 from operator import itemgetter
 
-from nltk import ConditionalFreqDist
+from lingtools.prob.probability import ConditionalFreqDist
 
 
 class Smoothing(object):
@@ -106,8 +106,8 @@ class NgramModel(object):
             else:
                 raise ValueError("Uknown smoothing: {}".format(smoothing))
             count = estimator.count(event)
-            total_count = estimator.N()
-            event_count = estimator.B()
+            total_count = estimator.total_count
+            event_count = estimator.total_outcomes
             return (count + add) / (total_count + (event_count * add))
         else:
             return estimator.freq(event)
@@ -122,7 +122,7 @@ class NgramModel(object):
         except KeyError:
             return 0
 
-        return estimator[event]
+        return estimator.count(event)
 
     def context_count(self, context):
         """Return the total count for a given context."""
@@ -134,7 +134,7 @@ class NgramModel(object):
         except KeyError:
             return 0
 
-        return estimator.N()
+        return estimator.total_count
 
     def allngrams(self):
         """Return all N-grams observed by the model and their probabilities."""

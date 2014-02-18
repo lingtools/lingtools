@@ -18,6 +18,7 @@ Probability utility methods
 # limitations under the License.
 
 import math
+from collections import defaultdict, Counter
 
 PROB_TOLERANCE = 0.000001
 
@@ -84,6 +85,85 @@ def normalize_counts(counts):
     """
     total = sum(counts)
     return [count / float(total) for count in counts]
+
+
+class FreqDist(object):
+
+    """A frequency distribution.
+
+    While this could more simply inherit from defaultdict/Counter, the
+    underlying implementation is intentionally abstracted to allow for
+    more complex behavior in the future.
+
+    >>> f = FreqDist()
+    >>> f.freq('a')
+    Traceback (most recent call last):
+    ValueError: No events counted yet
+    >>> f.total_count
+    0
+    >>> f.total_outcomes
+    0
+    >>> f.inc('a', 2)
+    >>> f.inc('b', 8)
+    >>> f.count('a')
+    2
+    >>> f.count('b')
+    8
+    >>> f.freq('a')
+    0.2
+    >>> f.freq('b')
+    0.8
+    >>> f.total_count
+    10
+    >>> f.total_outcomes
+    2
+
+    """
+
+    def __init__(self):
+        self._counts = Counter()
+        self._total = 0
+        super(FreqDist, self).__init__()
+
+    def inc(self, item, amount=1):
+        """Increment the count of an item by the given amount."""
+        self._total += amount
+        self._counts[item] += amount
+
+    def freq(self, item):
+        """Return the probability of an item."""
+        if self._total <= 0:
+            raise ValueError("No events counted yet")
+        return self._counts[item] / float(self._total)
+
+    def count(self, item):
+        """Return the count of an item."""
+        return self._counts[item]
+
+    @property
+    def total_count(self):
+        """Return the total number of events observed."""
+        return self._total
+
+    @property
+    def total_outcomes(self):
+        """Return the number of possible outcomes."""
+        return len(self._counts)
+
+    def outcomes(self):
+        """Return the outcomes of the distribution."""
+        return self._counts.keys()
+
+    def __contains__(self, item):
+        return self._counts.__contains__(item)
+
+
+class ConditionalFreqDist(defaultdict):
+
+    """A conditional frequency distribution."""
+
+    def __init__(self):
+        super(ConditionalFreqDist, self).__init__(FreqDist)
 
 
 if __name__ == "__main__":

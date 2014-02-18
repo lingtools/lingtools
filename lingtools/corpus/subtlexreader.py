@@ -17,14 +17,17 @@ Tools for reading from the SUBTLEX word frequency database.
 # limitations under the License.
 
 import csv
+from collections import defaultdict
 
 from lingtools.util import datamanager
 
 DEFAULT_PATH = "SUBTLEXus74286wordstextversion.txt"
 SUBTLEX_URL = "http://expsy.ugent.be/subtlexus/SUBTLEXus74286wordstextversion.zip"
+UK_BIGRAMS_DEFAULT_PATH = "SUBTLEX-UK_bigrams.csv"
+UK_BIGRAMS_URL = "http://crr.ugent.be/papers/SUBTLEX-UK_bigrams.csv"
 
 
-class SubtlexEntry(object):
+class SubtlexUSEntry(object):
 
     """Container class for information about each word as given in SUBTLEX."""
     __slots__ = ("word", "freq_count", "cd_count", "freq_count_low", "cd_count_low", "freq_million",
@@ -43,6 +46,7 @@ class SubtlexEntry(object):
         self.log10_cd = log10_cd
 
 
+# TODO: This should eventually be renamed to have "US" in the name.
 class SubtlexDict(dict):
 
     """
@@ -115,9 +119,58 @@ class SubtlexDict(dict):
         subtlex_reader = csv.DictReader(subtlex, delimiter='\t')
         for row in subtlex_reader:
             self[row['Word']] = \
-                SubtlexEntry(row['Word'], int(row['FREQcount']), int(row['CDcount']),
-                             int(row['FREQlow']), int(row['Cdlow']), float(row['SUBTLWF']),
-                             float(row['Lg10WF']), float(row['SUBTLCD']), float(row['Lg10CD']))
+                SubtlexUSEntry(row['Word'], int(row['FREQcount']), int(row['CDcount']),
+                               int(row['FREQlow']), int(row['Cdlow']), float(row['SUBTLWF']),
+                               float(row['Lg10WF']), float(row['SUBTLCD']), float(row['Lg10CD']))
+
+
+class SubtlexUKBigram(object):
+
+    """Representation of a single bigram in Subtlex UK."""
+    __slots__ = ("word1", "word2", "freq", "cd", "cdcount")
+
+    def __init__(self, word1, word2, freq, cd, cdcount):
+        self.word1 = word1
+        self.word2 = word2
+        self.freq = freq
+        self.cd = cd
+        self.cdcount = cdcount
+
+
+class SubtlexUKBigramDict(dict):
+
+    """Representation of SUBTLEX-UK bigram information."""
+
+    def __init__(self, subtlex_path):
+        """Load the SUBTLEX database from the specified file."""
+        # Track total counts in each context, which can be useful for
+        # excluding sparse data.
+        self.context_counts = defaultdict(int)
+
+        # Set up dict
+        dict.__init__(self)
+
+        # Fill it in
+        try:
+            subtlex = open(subtlex_path, 'rU')
+        except IOError:
+            raise IOError("Could not open SUBTLEX database at %s." % subtlex_path)
+
+        # DictReader would be convenient, but given the size of the
+        # file, efficiency is key. Using a standard reader appears to
+        # be 30% faster. Fields: spelling, spelling1, freq, cd,
+        # cdcount, separator, separatorfreq, separatorcd
+        subtlex_reader = csv.reader(subtlex, delimiter='\t')
+        # Skip header
+        subtlex_reader.next()
+        # Read the data
+        for word1, word2, freq, cd, cdcount, _, _, _ in subtlex_reader:
+            freq = int(freq)
+            cd = float(cd)
+            cdcount = int(cdcount)
+            self[(word1, word2)] = \
+                SubtlexUKBigram(word1, word2, freq, cd, cdcount)
+            self.context_counts[word1] += freq
 
 
 def download():

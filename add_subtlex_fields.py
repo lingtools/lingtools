@@ -31,13 +31,13 @@ import sys
 import csv
 import argparse
 
-from lingtools.corpus.subtlexreader import SubtlexDict, SubtlexEntry
+from lingtools.corpus.subtlexreader import SubtlexDict, SubtlexUSEntry
 
 DEFAULT_WORD_FIELD = 'word'
 COUNT_LOW_FIELD = 'freq_count_low'
 # Make a useful list of the fields available by getting the fields of
 # an entry and removing 'word'.
-SUBTLEX_FIELDS = fields = list(SubtlexEntry.__slots__)
+SUBTLEX_FIELDS = fields = list(SubtlexUSEntry.__slots__)
 SUBTLEX_FIELDS.remove("word")
 
 
