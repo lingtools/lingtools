@@ -64,6 +64,19 @@ representation.
 
 `elp_cohort.sh`: Perform cohort analysis on the items of the ELP
 
+
+Experimental files
+------------------
+
+Some older, not so well-written scripts are contained in the
+experimental folder. Use them at your own risk:
+
+`clean_childes.py`: Extract cleaned versions of transcripts from .cha
+files.
+
+`search_lex.py`: Regular expression search of CMUDict entries.
+
+
 Wordlists
 ---------
 
