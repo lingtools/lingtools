@@ -292,7 +292,8 @@ def cohort_info(word_path, freq_path, output_base):
                                  prefix_freq_entropy[prefix],
                                  prefix_uniform_surprisal[prefix],
                                  prefix_freq_surprisal[prefix],
-                                 ])
+                                ])
+
 
     print "Entropy and surprisal information written for {} words".format(len(word_prons))
 

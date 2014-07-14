@@ -28,7 +28,7 @@ def bigram_info(subtlex_path, out_path, first_word, second_word):
     # Check args
     if first_word and second_word:
         print >> sys.stderr, "Specify first or second word, not both."
-        sys.exit(1)        
+        sys.exit(1)
 
     # Load up bigram data
     print "Reading bigrams..."
@@ -46,7 +46,8 @@ def bigram_info(subtlex_path, out_path, first_word, second_word):
 
     # If a first word was specified, make sure it appears in the data.
     if first_word and first_word not in freqs:
-        print >> sys.stderr, "Requested context {!r} does not appear in the data.".format(first_word)
+        print >> sys.stderr, \
+            "Requested context {!r} does not appear in the data.".format(first_word)
         sys.exit(1)
 
     # Open output

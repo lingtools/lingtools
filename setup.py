@@ -19,7 +19,7 @@
 from distutils.core import setup
 
 DESCRIPTION = \
-    ("LingTools provides tools for working with linguistic data.")
+    "LingTools provides tools for working with linguistic data."
 
 
 setup(name='lingtools',
@@ -32,4 +32,4 @@ setup(name='lingtools',
       license='Apache',
       platforms='any',
       long_description=DESCRIPTION,
-      )
+     )
