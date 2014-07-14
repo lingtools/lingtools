@@ -71,6 +71,16 @@ You can now use ``lingtools`` from any Python program on your system.
 Tools
 =====
 
+Wordlists
+---------
+
+`make_wordlist.py`: Creates a frequency-sorted wordlist from an input
+file. The input must already be tokenized.
+
+`freqsampler.py`: Sample items from a wordlist like the one generated
+by `make_wordlist.py`.
+
+
 English Lexicon Project (ELP)
 -----------------------------
 
