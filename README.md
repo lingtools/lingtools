@@ -4,7 +4,7 @@ lingtools
 Simple tools for studying language: data preprocessing, frequency
 norms, n-gram models, working with lexicons, and more.
 
-LingTools incorporates external modules for syllabification
+lingtools incorporates external modules for syllabification
 (``lingtools.phon.syllabify``) and for reading from Praat TextGrids
 ``lingtools.phon.textgrid``). See
 [syllabify](https://github.com/kylebgorman/syllabify/) and
@@ -67,3 +67,15 @@ If you want to install it, do the following:
    location.)
 
 You can now use ``lingtools`` from any Python program on your system.
+
+Tools
+=====
+
+English Lexicon Project (ELP)
+-----------------------------
+
+`extract_elp_prons.py`: Extract the pronunciation of each item in the
+ELP, converting each pronunciation to a one character per-phoneme
+representation.
+
+`elp_cohort.sh`: Perform cohort analysis on the items of the ELP

@@ -1,8 +1,8 @@
-#!/bin/sh -e
+#!/bin/sh -eu
 
 # This is an example of how to prepare data for cohort analysis. You
 # will want to change the stimuli variable to point to a folder of
-# your stimuli, or leave it set to empy if you don't want time-aligned
+# your stimuli or set to empty if you don't want time-aligned
 # stimulus information.
 out=output
 # You'll need to get the elp word item information and set the path to it here.
@@ -20,7 +20,7 @@ echo "Extracting pronunciations..."
 # If there are stimuli, add their pronunciations to the list. This
 # will add any non-words and allow overriding the ELP pronunciations
 # for these items if needed.
-if test -n "$stimuli"; then
+if test -d "$stimuli"; then
     ./extract_aligned_prons.py stimuli $out/stimuli_prons.csv
     ./combine_csvs.py concat $out/elp_prons.csv $out/stimuli_prons.csv $out/all_prons.csv 1
 else
@@ -30,7 +30,7 @@ fi
 
 echo "Writing ELP entropy information..."
 ./cohort_info.py $out/all_prons.csv $subtlex $out/elp_ent
-if test -n "$stimuli"; then
+if test -d "$stimuli"; then
     echo "Writing aligned entropy information..."
     ./align_cohort.py $stimuli $out/elp_ent_prefix.csv $out/stimuli_ent_short.csv
     ./align_cohort.py $stimuli $out/elp_ent_prefix.csv $out/stimuli_ent_long.csv $sample_rate
