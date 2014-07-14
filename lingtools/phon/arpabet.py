@@ -68,6 +68,10 @@ u'i\u02d0'
 >>> sorted(set(_ARPABET_ARPAONE) ^ set(_ARPABET_IPA))
 ['AH1', 'AH2']
 
+# Check that AH2 is only problem in ELPONE -> ARPABET mapping
+>>> set(_double_reverse_map(_ARPABET_ELPONE)) ^ set(_ARPABET_ELPONE)
+set(['AH2'])
+
 """
 
 # Copyright 2011-2013 Constantine Lignos
@@ -200,12 +204,67 @@ _IPA_REPAIRS = \
         (u'i', u'ɪ'),
     )
 
+# Map between arpabet and the ELP one phone set
+_ARPABET_ELPONE = \
+    {
+        'AO': 'O',
+        'AA': 'A',
+        'IY': 'i',
+        'UW': 'u',
+        'EH': 'E',
+        'IH': 'I',
+        'UH': 'U',
+        # All stressed (primary or secondary) AH is mapped to wedge.
+        'AH2': 'V',
+        'AH1': 'V',
+        'AH': '@',
+        'AE': 'a',
+        'EY': 'e',
+        'AY': 'Y',
+        'OW': 'o',
+        'AW': 'W',
+        'OY': '8',
+        'ER': 'R',
+        'P': 'p',
+        'B': 'b',
+        'T': 't',
+        'D': 'd',
+        'K': 'k',
+        'G': 'g',
+        'CH': 'C',
+        'JH': 'J',
+        'F': 'f',
+        'V': 'v',
+        'TH': 'T',
+        'DH': 'D',
+        'S': 's',
+        'Z': 'z',
+        'SH': 'S',
+        'ZH': 'Z',
+        'HH': 'h',
+        'M': 'm',
+        'N': 'n',
+        'NG': 'G',
+        'R': 'r',
+        'Y': 'j',
+        'W': 'w',
+        'L': 'l',
+    }
+_ELPONE_ARPABET = dict((val, key) for key, val in _ARPABET_ELPONE.iteritems())
+# Ensure 'V' always maps to AH1 since both AH1 and AH2 map to it
+_ELPONE_ARPABET['V'] = 'AH1'
+
 _STRESS_RE = re.compile(r"\d")
 
 
 def remove_stress(phone):
-    """Remove any stress markings from a phoneme."""
+    """Remove any stress markings from a phone."""
     return _STRESS_RE.sub("", phone)
+
+
+def remove_stresses(phones):
+    """Remove any stress markings from a sequences of phones."""
+    return [remove_stress(phone) for phone in phones]
 
 
 def _convert_phone(phone, mapping, stress_marked=False):
@@ -221,6 +280,16 @@ def _convert_phone(phone, mapping, stress_marked=False):
 def arpabet_arpaone(phones):
     """Convert a sequence of two char ARPABET phones to one char versions."""
     return [_convert_phone(phone, _ARPABET_ARPAONE, True) for phone in phones]
+
+
+def arpabet_elpone(phones):
+    """Convert a sequence of two char ARPABET phones to ELP one char versions."""
+    return [_convert_phone(phone, _ARPABET_ELPONE, True) for phone in phones]
+
+
+def elpone_arpabet(phones):
+    """Convert a sequence of one char ELP phones to ARPABET two char versions."""
+    return [_convert_phone(phone, _ELPONE_ARPABET, False) for phone in phones]
 
 
 def _first_ipa_phone(phones):
