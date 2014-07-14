@@ -29,7 +29,7 @@ from lingtools.prob.probability import entropy, normalize_counts, surprisal
 
 # All vowels in the converted representation, used to identify onsets.
 # These should be checked against your stimuli list; these were
-# generated in an ad-hoc dfashion and may not be complete.
+# generated in an ad-hoc fashion and may not be complete.
 VOWELS = set([
     "8",
     "@",
