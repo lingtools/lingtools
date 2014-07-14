@@ -33,12 +33,14 @@ import argparse
 from lingtools.phon.textgrid import TextGrid
 from extract_elp_prons import replace_phons
 
+PHONEME_TIER_NAMES = set(("phonemes", "phones"))
+
 
 def phoneme_tier(textgrid):
-    """Return the first tier named "Phonemes" from a TextGrid."""
+    """Return the first tier corresponding to phonemes in a TextGrid."""
     try:
         return next(tier for tier in textgrid
-                    if tier.name.lower() == "phonemes")
+                    if tier.name.lower() in PHONEME_TIER_NAMES)
     except StopIteration:
         return None
 
