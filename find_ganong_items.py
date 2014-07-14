@@ -39,7 +39,7 @@ BAD_CHARACTERS = set((
     '"',
     ))
 
-VOWELS = syllabify.vowels
+VOWELS = syllabify.VOWELS
 
 
 def find_ganong(elp_path, cmudict_path, subtlex_path, max_sylls, out_path,
