@@ -47,6 +47,9 @@ Downloading http://svn.code.sf.net/p/cmusphinx/code/trunk/cmudict/cmudict.0.7a..
 You can also use the ``download_corpora.py`` script to download all
 the publicly available data sets.
 
+CELEX is not available publicly. For best result, place it (or a link
+to it) from a directory named `celex2` in the root of the repository.
+
 Installation
 ============
 
