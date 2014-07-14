@@ -287,13 +287,13 @@ def cohort_info(word_path, freq_path, output_base):
             pron = word_prons[word]
             for idx, prefix in enumerate(prefixes(pron)):
                 # Offset the pos by one as it's zero-indexed
-                writer.writerow([word, pron, prefix, idx + 1,
-                                 prefix_uniform_entropy[prefix],
-                                 prefix_freq_entropy[prefix],
-                                 prefix_uniform_surprisal[prefix],
-                                 prefix_freq_surprisal[prefix],
-                                ])
-
+                writer.writerow([
+                    word, pron, prefix, idx + 1,
+                    prefix_uniform_entropy[prefix],
+                    prefix_freq_entropy[prefix],
+                    prefix_uniform_surprisal[prefix],
+                    prefix_freq_surprisal[prefix],
+                ])
 
     print "Entropy and surprisal information written for {} words".format(len(word_prons))
 
