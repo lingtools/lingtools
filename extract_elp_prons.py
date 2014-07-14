@@ -73,12 +73,12 @@ def replace_phons(pron):
     return pron
 
 
-def extract(input_path, output_path, mono_only):
+def extract(input_path, output_path, mono_only, cmudict_format):
     """Extract words from the input path and write them to the output."""
     with open(input_path, 'rU') as input_file, \
             open(output_path, 'wb') as output_file:
         reader = csv.DictReader(input_file)
-        writer = csv.writer(output_file)
+
         count = 0
         for line in reader:
             # Extract orthography and pron
@@ -110,7 +110,9 @@ def extract(input_path, output_path, mono_only):
                     pron, len(pron), n_phon)
                 continue
 
-            writer.writerow((word, pron))
+            out_line = ("{},{}".format(word, pron) if not cmudict_format else
+                        "{}  {}".format(word.upper(), " ".join(pron)))
+            print >> output_file, out_line
             count += 1
 
     print "{} pronunciations written to {}".format(count, output_path)
@@ -123,8 +125,10 @@ def main():
     parser.add_argument('output', help='output CSV file')
     parser.add_argument('-m', '--mono', action='store_true',
                         help='output only monosyllabic items')
+    parser.add_argument('-c', '--cmudict', action='store_true',
+                        help='output in CMUDict format')
     args = parser.parse_args()
-    extract(args.input, args.output, args.mono)
+    extract(args.input, args.output, args.mono, args.cmudict)
 
 
 if __name__ == "__main__":
