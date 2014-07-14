@@ -11,23 +11,6 @@ lingtools incorporates external modules for syllabification
 [textgrid](https://github.com/kylebgorman/textgrid/) for more
 information.
 
-Installation
-============
-
-_You do not need to install ``lingtools`` to use it._ However, if you want to call
-it from other programs you develop, that may be the most convenient way to use it.
-Rather than installing, you can also just put the root of the repository on your
-``PYTHONPATH``.
-
-
-If you want to install it, do the following:
-
-1. Clone this git repository.
-1. Run ``sudo python setup.py install`` in the root of the repository. 
-   (You can skip the sudo if your Python site libraries live in a user-writable 
-   location.)
-
-You can now use ``lingtools`` from any Python program on your system.
 
 Tools
 =====
@@ -89,3 +72,22 @@ file. The input must already be tokenized.
 
 `freqsampler.py`: Sample items from a wordlist like the one generated
 by `make_wordlist.py`.
+
+
+Installation
+============
+
+_You do not need to install ``lingtools`` to use it._ However, if you want to call
+it from other programs you develop, that may be the most convenient way to use it.
+Rather than installing, you can also just put the root of the repository on your
+``PYTHONPATH``.
+
+
+If you want to install it, do the following:
+
+1. Clone this git repository.
+1. Run ``sudo python setup.py install`` in the root of the repository. 
+   (You can skip the sudo if your Python site libraries live in a user-writable 
+   location.)
+
+You can now use ``lingtools`` from any Python program on your system.
