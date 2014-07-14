@@ -52,7 +52,7 @@ PHON_REPLACEMENTS = (
     # Syllabic n. Note that N is engma in the original.
     ("n=", "N"),
     # Syllabic m
-    ("m=", "N"),
+    ("m=", "M"),
     # dZ to J (like JH in Arpabet)
     ("dZ", "J"),
     # tS to C (like CH in Arpabet)
