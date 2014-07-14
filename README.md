@@ -11,8 +11,29 @@ lingtools incorporates external modules for syllabification
 [textgrid](https://github.com/kylebgorman/textgrid/) for more
 information.
 
+Installation
+============
+
+_You do not need to install ``lingtools`` to use it._ However, if you want to call
+it from other programs you develop, that may be the most convenient way to use it.
+Rather than installing, you can also just put the root of the repository on your
+``PYTHONPATH``.
+
+
+If you want to install it, do the following:
+
+1. Clone this git repository.
+1. Run ``sudo python setup.py install`` in the root of the repository. 
+   (You can skip the sudo if your Python site libraries live in a user-writable 
+   location.)
+
+You can now use ``lingtools`` from any Python program on your system.
+
+Tools
+=====
+
 Corpora
-=======
+-------
 
 ``lingtools.corpus`` contains Python modules for reading from popular lexical databases.
 It currently supports using CELEX, CMUDict and SUBTLEX.
@@ -50,36 +71,6 @@ the publicly available data sets.
 CELEX is not available publicly. For best result, place it (or a link
 to it) from a directory named `celex2` in the root of the repository.
 
-Installation
-============
-
-_You do not need to install ``lingtools`` to use it._ However, if you want to call
-it from other programs you develop, that may be the most convenient way to use it.
-Rather than installing, you can also just put the root of the repository on your
-``PYTHONPATH``.
-
-
-If you want to install it, do the following:
-
-1. Clone this git repository.
-1. Run ``sudo python setup.py install`` in the root of the repository. 
-   (You can skip the sudo if your Python site libraries live in a user-writable 
-   location.)
-
-You can now use ``lingtools`` from any Python program on your system.
-
-Tools
-=====
-
-Wordlists
----------
-
-`make_wordlist.py`: Creates a frequency-sorted wordlist from an input
-file. The input must already be tokenized.
-
-`freqsampler.py`: Sample items from a wordlist like the one generated
-by `make_wordlist.py`.
-
 
 English Lexicon Project (ELP)
 -----------------------------
@@ -89,3 +80,12 @@ ELP, converting each pronunciation to a one character per-phoneme
 representation.
 
 `elp_cohort.sh`: Perform cohort analysis on the items of the ELP
+
+Wordlists
+---------
+
+`make_wordlist.py`: Creates a frequency-sorted wordlist from an input
+file. The input must already be tokenized.
+
+`freqsampler.py`: Sample items from a wordlist like the one generated
+by `make_wordlist.py`.
