@@ -110,7 +110,11 @@ def align_cohort(input_dir, ent_path, rate, output_path, arpabet):
             mark = (replace_phons(tier[0].mark) if not arpabet else
                     arpabet_elpone([tier[0].mark])[0])
             prefix = mark
+            # Elapsed time
             time = 0
+            # Elapsed time steps
+            step = 0L
+            # Index in the tier
             idx = 0
             # This loop could be optimized easily to speed output on
             # high sample rates
@@ -135,7 +139,8 @@ def align_cohort(input_dir, ent_path, rate, output_path, arpabet):
                 writer.writerow([word, time, idx + 1, mark,
                                  ent_unweight, ent_freq])
                 # Step forward
-                time += time_step
+                step += 1
+                time = time_step * step
 
     output_file.close()
 
