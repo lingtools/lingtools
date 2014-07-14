@@ -31,6 +31,7 @@ import csv
 import argparse
 
 from lingtools.phon.textgrid import TextGrid
+from lingtools.phon.arpabet import arpabet_elpone
 from extract_elp_prons import replace_phons
 
 PHONEME_TIER_NAMES = set(("phonemes", "phones"))
@@ -51,7 +52,7 @@ def textgrid_files(dirpath):
             if filename.lower().endswith(".textgrid")]
 
 
-def align_cohort(input_dir, ent_path, rate, output_path):
+def align_cohort(input_dir, ent_path, rate, output_path, arpabet):
     """Output info for each aligned item at the given rate."""
     # Words to their phoneme tiers
     word_phon_tiers = {}
@@ -89,13 +90,15 @@ def align_cohort(input_dir, ent_path, rate, output_path):
         for word, tier in word_phon_tiers.iteritems():
             prefix = ""
             for idx, interval in enumerate(tier):
-                prefix += replace_phons(interval.mark)
+                mark = (replace_phons(interval.mark) if not arpabet else
+                        arpabet_elpone([interval.mark])[0])
+                prefix += mark
                 # Get the entropy
                 try:
                     ent_unweight, ent_freq = prefix_ent[prefix]
                 except KeyError:
                     ent_unweight, ent_freq = 0, 0
-                writer.writerow([word, idx + 1, replace_phons(interval.mark),
+                writer.writerow([word, idx + 1, mark,
                                  interval.minTime, interval.maxTime,
                                  ent_unweight, ent_freq])
     else:
@@ -104,7 +107,9 @@ def align_cohort(input_dir, ent_path, rate, output_path):
         writer.writerow(['word', 'time', 'position', 'phoneme', 'ent.unweight',
                          'ent.freq'])
         for word, tier in word_phon_tiers.iteritems():
-            prefix = replace_phons(tier[0].mark)
+            mark = (replace_phons(tier[0].mark) if not arpabet else
+                    arpabet_elpone([tier[0].mark])[0])
+            prefix = mark
             time = 0
             idx = 0
             # This loop could be optimized easily to speed output on
@@ -118,14 +123,16 @@ def align_cohort(input_dir, ent_path, rate, output_path):
                         interval = tier[idx]
                     except IndexError:
                         break
-                    prefix += replace_phons(interval.mark)
+                    mark = (replace_phons(interval.mark)if not arpabet else
+                            arpabet_elpone([interval.mark])[0])
+                    prefix += mark
+
                 # Get the entropy
                 try:
                     ent_unweight, ent_freq = prefix_ent[prefix]
                 except KeyError:
                     ent_unweight, ent_freq = 0, 0
-                writer.writerow([word, time, idx + 1,
-                                 replace_phons(interval.mark),
+                writer.writerow([word, time, idx + 1, mark,
                                  ent_unweight, ent_freq])
                 # Step forward
                 time += time_step
@@ -142,8 +149,11 @@ def main():
     parser.add_argument('output', help='output CSV file')
     parser.add_argument('rate', nargs='?', default=None,
                         type=int, help='resolution of output, in Hz')
+    parser.add_argument('-a', '--arpabet', action='store_true',
+                        help='convert alignments from ARPABET')
     args = parser.parse_args()
-    align_cohort(args.input_dir, args.prefix_entropy, args.rate, args.output)
+    align_cohort(args.input_dir, args.prefix_entropy, args.rate, args.output,
+                 args.arpabet)
 
 
 if __name__ == "__main__":
