@@ -21,15 +21,28 @@ from collections import defaultdict
 
 def prefixes(word):
     """Return all prefixes of a word, including the word itself.
-    >> prefixes('cat')
+    >>> prefixes('cat')
     ['c', 'ca', 'cat']
-    >> prefixes('a')
+    >>> prefixes('a')
     ['a']
-    >> prefixes('')
+    >>> prefixes('')
     []
 
     """
     return [word[:idx] for idx in range(1, len(word) + 1)]
+
+
+def suffixes(word):
+    """Return all suffixes of a word, including the word itself.
+    >>> suffixes('cat')
+    ['t', 'at', 'cat']
+    >>> suffixes('a')
+    ['a']
+    >>> suffixes('')
+    []
+
+    """
+    return [word[-idx:] for idx in range(1, len(word) + 1)]
 
 
 def make_prefix_dict(words):
