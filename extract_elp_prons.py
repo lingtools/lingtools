@@ -67,7 +67,7 @@ def replace_phons(pron):
     return pron
 
 
-def extract(input_path, output_path, mono_only, cmudict_format):
+def extract(input_path, output_path, mono_only, cmudict_format, target_sylls):
     """Extract words from the input path and write them to the output."""
     with open(output_path, 'wb') as output_file:
         elp = ELP(input_path)
@@ -81,8 +81,12 @@ def extract(input_path, output_path, mono_only, cmudict_format):
             # Extract orthography and pron
             pron = entry.pron
             nsyll = entry.nsyll
-            # Skip non-monosyllabic items if specified
-            if mono_only and nsyll != 1:
+            # Match syllable numbers if specified
+            if target_sylls is not None and nsyll != target_sylls:
+                continue
+
+            # Skip non-monomorphs if specified
+            if mono_only and not entry.monomorph:
                 continue
 
             # Skip NULL prons, get the length if there is a pron.
@@ -118,11 +122,13 @@ def main():
     parser.add_argument('input', help='input CSV file')
     parser.add_argument('output', help='output CSV file')
     parser.add_argument('-m', '--mono', action='store_true',
-                        help='output only monosyllabic items')
+                        help='output only monomorphemic items')
+    parser.add_argument('-s', '--sylls', nargs='?', type=int, metavar='n',
+                        help='output only items with n syllables')
     parser.add_argument('-c', '--cmudict', action='store_true',
                         help='output in CMUDict format')
     args = parser.parse_args()
-    extract(args.input, args.output, args.mono, args.cmudict)
+    extract(args.input, args.output, args.mono, args.cmudict, args.sylls)
 
 
 if __name__ == "__main__":
