@@ -22,7 +22,7 @@ import sys
 import re
 import csv
 
-NULL = " "
+NULL = "NULL"
 MISANALYSIS_MARKER = "--"
 ANALYSIS_RE = re.compile(r'^(.+<)*-?(\{.+\})(>.+)*$')
 SEP_RE = re.compile(r'[<>{}]+')
@@ -39,10 +39,11 @@ class Word(object):
     """Representation of data for a word, including frequency and RT data."""
     __slots__ = ("text", "length", "freq_hal", "freq_kf", "freq_sbtlx", "freq_celex",
                  "prefixes", "suffixes", "root", "inflectional", "derivational", "analysis",
-                 "nphon", "nsyll", "fake")
+                 "nphon", "nsyll", "pron", "roots", "compound", "orig_analysis", "analyzed",
+                 "fake")
 
     def __init__(self, text, length, freq_hal, freq_kf, freq_sbtlx, freq_celex, analysis,
-                 nphon, nsyll, fake=False):
+                 nphon, nsyll, pron, fake=False):
         """Set basic information about the word and parse the analysis."""
         self.text = text
         self.length = length
@@ -52,18 +53,25 @@ class Word(object):
         self.freq_celex = freq_celex
         self.nphon = nphon
         self.nsyll = nsyll
+        self.pron = pron
+        self.orig_analysis = analysis
         self.fake = fake
 
         # This may raise a AnalysisParseError, which is passed on to the caller.
-        self.prefixes, roots, self.suffixes = parse_analysis(analysis)
-        # If there's more than one root, we can't make use of this
-        if len(roots) > 1:
-            raise AnalysisParseError("Compound forms are excluded")
-        else:
+        self.prefixes, roots, self.suffixes = (parse_analysis(analysis) if analysis != NULL else
+                                               ([], [], []))
+        # If there's more than one root, flag it
+        self.compound = len(roots) > 1
+        self.roots = roots
+        if roots:
             self.root = roots[0]
+            self.analyzed = True
+        else:
+            self.root = None
+            self.analyzed = False
 
         # Store the updated analysis
-        self.analysis = format_analysis(self.prefixes, [self.root], self.suffixes)
+        self.analysis = format_analysis(self.prefixes, self.roots, self.suffixes)
 
         # Mark inflectional/derivational
         self.inflectional = self.derivational = False
@@ -91,7 +99,8 @@ class Word(object):
     @property
     def monomorph(self):
         """Return whether the root is monomorphemic."""
-        return not self.prefixes and not self.suffixes
+        return (self.analyzed and
+                not self.compound and not self.prefixes and not self.suffixes)
 
 
 class ELP(dict):
@@ -122,21 +131,24 @@ class ELP(dict):
 
 def parse_word(adict):
     """Parse a word from a dict of the ELP fields for the word."""
-    if adict['MorphSp'] == "NULL":
-        return None
-    else:
-        # Clean up the KF frequency, putting zero where needed
-        if adict['Freq_KF'] == "NULL":
-            adict['Freq_KF'] = 0
+    # Clean up the KF frequency, putting zero where needed
+    if adict['Freq_KF'] == NULL:
+        adict['Freq_KF'] = 0
+    # Make unspecified NSyll and NPhon -1
+    if adict['NSyll'] == NULL:
+        adict['NSyll'] = -1
+    if adict['NPhon'] == NULL:
+        adict['NPhon'] = -1
 
-        # Catch any parsing errors by returning None
-        try:
-            # Put in None for the SUBTLEX/CELEX frequency as we can't get it out of the ELP data
-            return Word(adict['Word'], adict['Length'], int(adict['Freq_HAL']),
-                        int(adict['Freq_KF']), None, None, adict['MorphSp'],
-                        adict['NPhon'], int(adict['NSyll']))
-        except AnalysisParseError:
-            return None
+    # Catch any parsing errors by returning None
+    try:
+        # Put in None for the SUBTLEX/CELEX frequency as we can't get it out of the ELP data
+        return Word(adict['Word'], adict['Length'], int(adict['Freq_HAL']),
+                    int(adict['Freq_KF']), None, None, adict['MorphSp'],
+                    int(adict['NPhon']), int(adict['NSyll']), adict['Pron'])
+    except AnalysisParseError as err:
+        print "ELP entry parsing error:", err
+        return None
 
 
 def parse_analysis(analysis):
@@ -147,7 +159,7 @@ def parse_analysis(analysis):
         prefixes, roots, suffixes = ANALYSIS_RE.match(analysis).groups()
     except AttributeError:
         # No match
-        raise AnalysisParseError("Could not match analysis {} to regex".format(analysis))
+        raise AnalysisParseError("Could not match analysis {!r} to regex".format(analysis))
 
     prefixes = ([item for item in SEP_RE.split(prefixes) if item]
                 if prefixes else None)

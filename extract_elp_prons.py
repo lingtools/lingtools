@@ -22,15 +22,9 @@ markers.
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import csv
 import argparse
 
-# TODO: Change this to use the ELP class
-WORD_FIELD = "Word"
-PRON_FIELD = "Pron"
-NPHON_FIELD = "NPhon"
-NSYLL_FIELD = "NSyll"
-NULL = "NULL"
+from lingtools.corpus.elp import ELP, NULL
 
 # " is primary stress, % is secondary, . is syllable boundary
 DELETION_CHARS = '"%.'
@@ -75,18 +69,18 @@ def replace_phons(pron):
 
 def extract(input_path, output_path, mono_only, cmudict_format):
     """Extract words from the input path and write them to the output."""
-    with open(input_path, 'rU') as input_file, \
-            open(output_path, 'wb') as output_file:
-        reader = csv.DictReader(input_file)
+    with open(output_path, 'wb') as output_file:
+        elp = ELP(input_path)
+
+        # Sort by lowercase version of entry
+        words = sorted(elp.keys(), key=lambda s: s.lower())
 
         count = 0
-        for line in reader:
+        for word in words:
+            entry = elp[word]
             # Extract orthography and pron
-            word = line[WORD_FIELD]
-            pron = line[PRON_FIELD]
-            nsyll = (int(line[NSYLL_FIELD])
-                     if line[NSYLL_FIELD] != NULL else -1)
-
+            pron = entry.pron
+            nsyll = entry.nsyll
             # Skip non-monosyllabic items if specified
             if mono_only and nsyll != 1:
                 continue
@@ -95,7 +89,7 @@ def extract(input_path, output_path, mono_only, cmudict_format):
             if pron == NULL:
                 continue
             else:
-                n_phon = int(line[NPHON_FIELD])
+                n_phon = entry.nphon
 
             # Perform phoneme replacement on the pron
             pron = replace_phons(pron)
